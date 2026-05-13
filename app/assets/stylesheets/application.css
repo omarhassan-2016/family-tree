@@ -1073,6 +1073,71 @@ a:hover { color: var(--accent); }
   color: var(--accent-light) !important;
 }
 
+/* === Tree Health === */
+.health-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.health-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.health-stat-card.critical { border-bottom: 3px solid var(--danger); background: linear-gradient(180deg, transparent, rgba(248, 113, 113, 0.05)); }
+.health-stat-card.warning { border-bottom: 3px solid var(--warning); background: linear-gradient(180deg, transparent, rgba(251, 191, 36, 0.05)); }
+.health-stat-card.info { border-bottom: 3px solid var(--success); background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.05)); }
+
+.health-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.health-count { font-size: 2.5rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+.health-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.issue-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.issue-critical { border-left: 4px solid var(--danger); }
+.issue-warning { border-left: 4px solid var(--warning); }
+.issue-info { border-left: 4px solid var(--success); }
+
+.issue-header {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.issue-person {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-glass);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.issue-message {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.issue-related {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-glass);
+  font-size: 0.85rem;
+}
+
 /* === Responsive === */
 @media (max-width: 768px) {
   .sidebar { display: none; }

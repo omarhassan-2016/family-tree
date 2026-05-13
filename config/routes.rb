@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   get "map", to: "map#index"
   get "map/data", to: "map#data"
 
+  # Tree Health & Anomalies
+  get "health", to: "health#index"
+
   resource :gedcom, only: [:new, :create], controller: "gedcom" do
     get :export, on: :member
   end

@@ -1,0 +1,94 @@
+<% content_for(:title) { "Data Health — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>🩺 Tree Health & Anomalies</h2>
+    <p class="subtitle">Scan for logical errors, missing data, and timeline conflicts</p>
+  </div>
+  <% if @total_issues == 0 %>
+    <div class="badge" style="background: rgba(52,211,153,0.15); color: var(--success); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600;">
+      ✓ Perfect Health
+    </div>
+  <% else %>
+    <div class="badge" style="background: rgba(248,113,113,0.15); color: var(--danger); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600;">
+      <%= @total_issues %> Issues Found
+    </div>
+  <% end %>
+</div>
+
+<div class="health-overview">
+  <div class="health-stat-card critical">
+    <div class="health-icon">🛑</div>
+    <div class="health-count"><%= @scan_results[:critical].size %></div>
+    <div class="health-label">Critical Errors</div>
+  </div>
+  <div class="health-stat-card warning">
+    <div class="health-icon">⚠️</div>
+    <div class="health-count"><%= @scan_results[:warning].size %></div>
+    <div class="health-label">Warnings</div>
+  </div>
+  <div class="health-stat-card info">
+    <div class="health-icon">ℹ️</div>
+    <div class="health-count"><%= @scan_results[:info].size %></div>
+    <div class="health-label">Suggestions</div>
+  </div>
+</div>
+
+<% if @total_issues == 0 %>
+  <div class="empty-state" style="margin-top: 3rem;">
+    <span class="icon">✨</span>
+    <p>Your family tree data looks incredibly clean!</p>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">No logical timeline errors, extreme lifespans, or anomalous relationships were found.</p>
+  </div>
+<% else %>
+  
+  <% [:critical, :warning, :info].each do |severity| %>
+    <% issues = @scan_results[severity] %>
+    <% if issues.any? %>
+      <div class="section-header" style="margin-top: 2.5rem; margin-bottom: 1rem;">
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+          <% if severity == :critical %>🛑 Critical Errors
+          <% elsif severity == :warning %>⚠️ Warnings
+          <% else %>ℹ️ Data Suggestions<% end %>
+        </h3>
+      </div>
+
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+        <% issues.each do |issue| %>
+          <div class="card issue-card issue-<%= severity %>">
+            <div class="issue-header">
+              <strong><%= issue[:title] %></strong>
+            </div>
+            
+            <div class="issue-person">
+              <div class="person-avatar <%= issue[:person].gender %>" style="width:36px;height:36px;font-size:0.8rem;">
+                <%= issue[:person].initials %>
+              </div>
+              <div>
+                <%= link_to issue[:person].full_name, person_path(issue[:person]), style: "font-weight: 500;" %>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                  <%= issue[:person].life_span || "Unknown dates" %>
+                </div>
+              </div>
+            </div>
+
+            <p class="issue-message"><%= issue[:message] %></p>
+
+            <% if issue[:related] %>
+              <div class="issue-related">
+                <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Related:</span>
+                <%= link_to issue[:related].full_name, person_path(issue[:related]) %>
+              </div>
+            <% end %>
+            <% if issue[:related_family] %>
+              <div class="issue-related">
+                <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Related Family:</span>
+                <%= link_to "Family of #{issue[:related_family].people.map(&:first_name).join(' & ')}", family_path(issue[:related_family]) %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

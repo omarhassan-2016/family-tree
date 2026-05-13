@@ -28,6 +28,11 @@ export default class extends Controller {
     svg.setAttribute("height", "100%")
     svg.setAttribute("viewBox", `0 0 ${width} ${height}`)
     svg.style.background = "transparent"
+    
+    // Viewport group for panning/zooming
+    const viewport = document.createElementNS("http://www.w3.org/2000/svg", "g")
+    svg.appendChild(viewport)
+    
     container.innerHTML = ""
     container.appendChild(svg)
 
@@ -43,7 +48,7 @@ export default class extends Controller {
       line.setAttribute("y2", conn.y2)
       line.setAttribute("stroke", "rgba(99, 102, 241, 0.3)")
       line.setAttribute("stroke-width", "2")
-      svg.appendChild(line)
+      viewport.appendChild(line)
     })
 
     // Draw nodes
@@ -73,6 +78,8 @@ export default class extends Controller {
       text.setAttribute("font-weight", "600")
       text.setAttribute("font-family", "Inter, sans-serif")
       text.textContent = this.truncate(node.name, 18)
+      // Make text non-selectable during drag
+      text.style.userSelect = "none"
       g.appendChild(text)
 
       // Dates
@@ -82,14 +89,23 @@ export default class extends Controller {
       dates.setAttribute("fill", "#6b7280")
       dates.setAttribute("font-size", "10")
       dates.setAttribute("font-family", "Inter, sans-serif")
+      dates.style.userSelect = "none"
       const birthYear = node.birth_year || "?"
       const deathYear = node.death_year ? ` – ${node.death_year}` : ""
       dates.textContent = `${birthYear}${deathYear}`
       g.appendChild(dates)
 
-      // Click to navigate
-      g.addEventListener("click", () => {
-        window.location.href = `/people/${node.id}`
+      // Click to navigate (ignore if panning)
+      let clickStart = { x: 0, y: 0 }
+      g.addEventListener("mousedown", (e) => {
+        clickStart = { x: e.clientX, y: e.clientY }
+      })
+      g.addEventListener("click", (e) => {
+        const dx = Math.abs(e.clientX - clickStart.x)
+        const dy = Math.abs(e.clientY - clickStart.y)
+        if (dx < 5 && dy < 5) {
+          window.location.href = `/people/${node.id}`
+        }
       })
 
       // Hover effect
@@ -102,8 +118,61 @@ export default class extends Controller {
         rect.setAttribute("stroke-width", node.isRoot ? "2" : "1")
       })
 
-      svg.appendChild(g)
+      viewport.appendChild(g)
     })
+    
+    // Initialize Pan and Zoom interactions
+    this.setupPanZoom(svg, viewport)
+  }
+
+  setupPanZoom(svg, viewport) {
+    let isPanning = false
+    let startPoint = { x: 0, y: 0 }
+    let currentPan = { x: 0, y: 0 }
+    let scale = 1
+
+    svg.style.cursor = "grab"
+
+    const updateTransform = () => {
+      viewport.setAttribute("transform", `translate(${currentPan.x}, ${currentPan.y}) scale(${scale})`)
+    }
+
+    svg.addEventListener("mousedown", (e) => {
+      if (e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "rect") return
+      isPanning = true
+      startPoint = { x: e.clientX - currentPan.x, y: e.clientY - currentPan.y }
+      svg.style.cursor = "grabbing"
+    })
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isPanning) return
+      e.preventDefault()
+      currentPan = { x: e.clientX - startPoint.x, y: e.clientY - startPoint.y }
+      updateTransform()
+    })
+
+    window.addEventListener("mouseup", () => {
+      isPanning = false
+      svg.style.cursor = "grab"
+    })
+
+    svg.addEventListener("wheel", (e) => {
+      e.preventDefault()
+      // Wheel delta varies by OS/Browser, normalize slightly
+      const zoomFactor = -e.deltaY * 0.001
+      const newScale = Math.min(Math.max(0.2, scale + zoomFactor), 3)
+      
+      const rect = svg.getBoundingClientRect()
+      const mouseX = e.clientX - rect.left
+      const mouseY = e.clientY - rect.top
+
+      // Zoom toward cursor math
+      currentPan.x = mouseX - (mouseX - currentPan.x) * (newScale / scale)
+      currentPan.y = mouseY - (mouseY - currentPan.y) * (newScale / scale)
+      scale = newScale
+      
+      updateTransform()
+    }, { passive: false })
   }
 
   computeLayout(data, width, height) {

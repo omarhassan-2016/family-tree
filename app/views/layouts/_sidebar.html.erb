@@ -36,6 +36,11 @@
       <span>Relationships</span>
     <% end %>
 
+    <%= link_to health_path, class: "nav-link #{controller_name == 'health' ? 'active' : ''}" do %>
+      <span class="icon">🩺</span>
+      <span>Tree Health</span>
+    <% end %>
+
     <%= link_to map_path, class: "nav-link #{controller_name == 'map' ? 'active' : ''}" do %>
       <span class="icon">🗺️</span>
       <span>Map View</span>
