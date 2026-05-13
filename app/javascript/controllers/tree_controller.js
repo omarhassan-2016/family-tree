@@ -243,11 +243,49 @@ export default class extends Controller {
     let linkId = 0
     const centerX = width / 2
     const rootY = height / 2
+    const nodeSpacingX = 220
+    const nodeSpacingY = 140
 
-    // Root node
+    const placeAncestors = (person, x, y) => {
+      if (person.parents && person.parents.length > 0) {
+        const count = person.parents.length
+        const startX = x - ((count - 1) * nodeSpacingX) / 2
+        
+        person.parents.forEach((parent, i) => {
+          const px = startX + i * nodeSpacingX
+          const py = y - nodeSpacingY
+          nodes.push({ ...parent, x: px, y: py, isRoot: false, role: "Ancestor" })
+          connections.push({ id: `l_${linkId++}`, x1: x, y1: y - 35, x2: px, y2: py + 35 })
+          placeAncestors(parent, px, py)
+        })
+      }
+    }
+
+    const placeDescendants = (person, x, y) => {
+      if (person.children && person.children.length > 0) {
+        const count = person.children.length
+        const startX = x - ((count - 1) * nodeSpacingX) / 2
+        
+        person.children.forEach((child, i) => {
+          const cx = startX + i * nodeSpacingX
+          const cy = y + nodeSpacingY
+          nodes.push({ ...child, x: cx, y: cy, isRoot: false, role: "Descendant" })
+          connections.push({ id: `l_${linkId++}`, x1: x, y1: y + 35, x2: cx, y2: cy - 35 })
+          
+          if (child.spouses && child.spouses.length > 0) {
+            child.spouses.forEach((spouse, j) => {
+              const sx = cx + 190 * (j + 1)
+              nodes.push({ ...spouse, x: sx, y: cy, isRoot: false, role: "Spouse" })
+              connections.push({ id: `l_${linkId++}`, x1: cx + 85, y1: cy, x2: sx - 85, y2: cy })
+            })
+          }
+          placeDescendants(child, cx, cy)
+        })
+      }
+    }
+
     nodes.push({ ...data, x: centerX, y: rootY, isRoot: true, role: "Focus" })
 
-    // Spouses next to root
     if (data.spouses) {
       data.spouses.forEach((spouse, i) => {
         const sx = centerX + 190 * (i + 1)
@@ -256,47 +294,8 @@ export default class extends Controller {
       })
     }
 
-    // Parents above
-    if (data.parents) {
-      const parentCount = data.parents.length
-      const parentSpacing = 220
-      const parentStartX = centerX - ((parentCount - 1) * parentSpacing) / 2
-      const parentY = rootY - 140
-
-      data.parents.forEach((parent, i) => {
-        const px = parentStartX + i * parentSpacing
-        nodes.push({ ...parent, x: px, y: parentY, isRoot: false, role: "Parent" })
-        connections.push({ id: `l_${linkId++}`, x1: centerX, y1: rootY - 35, x2: px, y2: parentY + 35 })
-
-        // Grandparents
-        if (parent.parents) {
-          const gpCount = parent.parents.length
-          const gpSpacing = 180
-          const gpStartX = px - ((gpCount - 1) * gpSpacing) / 2
-          const gpY = parentY - 140
-
-          parent.parents.forEach((gp, j) => {
-            const gpx = gpStartX + j * gpSpacing
-            nodes.push({ ...gp, x: gpx, y: gpY, isRoot: false, role: "Grandparent" })
-            connections.push({ id: `l_${linkId++}`, x1: px, y1: parentY - 35, x2: gpx, y2: gpY + 35 })
-          })
-        }
-      })
-    }
-
-    // Children below
-    if (data.children) {
-      const childCount = data.children.length
-      const childSpacing = 200
-      const childStartX = centerX - ((childCount - 1) * childSpacing) / 2
-      const childY = rootY + 140
-
-      data.children.forEach((child, i) => {
-        const cx = childStartX + i * childSpacing
-        nodes.push({ ...child, x: cx, y: childY, isRoot: false, role: "Child" })
-        connections.push({ id: `l_${linkId++}`, x1: centerX, y1: rootY + 35, x2: cx, y2: childY - 35 })
-      })
-    }
+    placeAncestors(data, centerX, rootY)
+    placeDescendants(data, centerX, rootY)
 
     return { nodes, connections }
   }
