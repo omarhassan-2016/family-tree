@@ -149,6 +149,48 @@
   <% end %>
 <% end %>
 
+<%# --- On This Day --- %>
+<% if @on_this_day_births.any? || @on_this_day_deaths.any? || @on_this_day_marriages.any? %>
+  <div class="chart-card chart-wide" style="background: linear-gradient(145deg, rgba(99, 102, 241, 0.05), transparent); border-color: rgba(99, 102, 241, 0.2);">
+    <h4 class="chart-title" style="color: var(--accent-light);">🗓 On This Day — <%= Date.today.strftime('%B %d') %></h4>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+      <% if @on_this_day_births.any? %>
+        <div>
+          <strong style="color: var(--success); font-size: 0.85rem; text-transform: uppercase;">👶 Born Today</strong>
+          <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
+            <% @on_this_day_births.each do |p| %>
+              <li style="margin-bottom: 0.25rem;"><%= link_to p.full_name, person_path(p) %> (<%= p.birth_date.year %>)</li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if @on_this_day_deaths.any? %>
+        <div>
+          <strong style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">🕊️ Died Today</strong>
+          <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
+            <% @on_this_day_deaths.each do |p| %>
+              <li style="margin-bottom: 0.25rem;"><%= link_to p.full_name, person_path(p) %> (<%= p.death_date.year %>)</li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if @on_this_day_marriages.any? %>
+        <div>
+          <strong style="color: var(--warning); font-size: 0.85rem; text-transform: uppercase;">💍 Married Today</strong>
+          <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
+            <% @on_this_day_marriages.each do |f| %>
+              <li style="margin-bottom: 0.25rem;"><%= link_to "Family of #{f.people.map(&:first_name).join(' & ')}", family_path(f) %> (<%= f.marriage_date.year %>)</li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
 <%# --- Recently Updated --- %>
 <div class="section-header" style="margin-top: 2rem;">
   <h3>Recently Updated</h3>

@@ -38,5 +38,11 @@ class DashboardController < ApplicationController
     # Earliest and latest
     @earliest_birth = Person.where.not(birth_date: nil).minimum(:birth_date)
     @latest_marriage = Family.maximum(:marriage_date)
+
+    # On this day
+    today = Date.today
+    @on_this_day_births = Person.where("EXTRACT(MONTH FROM birth_date) = ? AND EXTRACT(DAY FROM birth_date) = ?", today.month, today.day)
+    @on_this_day_deaths = Person.where("EXTRACT(MONTH FROM death_date) = ? AND EXTRACT(DAY FROM death_date) = ?", today.month, today.day)
+    @on_this_day_marriages = Family.where("EXTRACT(MONTH FROM marriage_date) = ? AND EXTRACT(DAY FROM marriage_date) = ?", today.month, today.day).includes(:people)
   end
 end

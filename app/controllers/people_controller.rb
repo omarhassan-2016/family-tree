@@ -2,7 +2,22 @@ class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :edit, :update, :destroy]
 
   def index
-    @people = Person.order(:last_name, :first_name).page(params[:page])
+    @people = Person.order(:last_name, :first_name)
+
+    # Filters
+    @people = @people.search(params[:query]) if params[:query].present?
+    @people = @people.where(gender: params[:gender]) if params[:gender].present?
+    
+    if params[:status] == "living"
+      @people = @people.where(death_date: nil)
+    elsif params[:status] == "deceased"
+      @people = @people.where.not(death_date: nil)
+    end
+
+    respond_to do |format|
+      format.html { @people = @people.page(params[:page]) }
+      format.csv { send_data @people.to_csv, filename: "family_tree_people_#{Date.today}.csv" }
+    end
   end
 
   def show

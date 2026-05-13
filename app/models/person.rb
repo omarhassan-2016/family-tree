@@ -66,6 +66,20 @@ class Person < ApplicationRecord
     scope.limit(5)
   end
 
+  # --- Export ---
+  def self.to_csv
+    require "csv"
+    attributes = %w[id first_name last_name maiden_name suffix gender birth_date birth_place death_date death_place]
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes.map(&:humanize)
+
+      all.each do |person|
+        csv << attributes.map { |attr| person.send(attr) }
+      end
+    end
+  end
+
   # --- Timeline Events ---
 
   def timeline_events
