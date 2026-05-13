@@ -1,0 +1,52 @@
+<% content_for(:title) { "Add User — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>➕ Add User</h2>
+    <p class="subtitle">Invite a family member to view or edit the tree</p>
+  </div>
+  <%= link_to "← Back", users_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="card" style="max-width: 500px;">
+  <%= form_with(model: @user, local: true) do |f| %>
+    <% if @user.errors.any? %>
+      <div style="background: rgba(248,113,113,0.1); border-left: 4px solid var(--danger); padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm); font-size: 0.85rem;">
+        <ul style="margin: 0; padding-left: 1.5rem; color: var(--danger);">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, class: "form-input", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :role, class: "form-label" %>
+      <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] }, {}, class: "form-select" %>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+        <strong>Admin:</strong> Full access + user management.<br>
+        <strong>Contributor:</strong> Can add, edit, or delete family tree records.<br>
+        <strong>Viewer:</strong> Can only view the tree and leave comments.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, class: "form-input", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation, class: "form-label" %>
+      <%= f.password_field :password_confirmation, class: "form-input", required: true %>
+    </div>
+
+    <div class="btn-group">
+      <%= f.submit "Create User", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

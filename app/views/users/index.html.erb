@@ -1,0 +1,46 @@
+<% content_for(:title) { "Manage Users — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>👥 Manage Users</h2>
+    <p class="subtitle">Invite and manage family members</p>
+  </div>
+  <%= link_to new_user_path, class: "btn btn-primary" do %>
+    ➕ Add User
+  <% end %>
+</div>
+
+<div class="card" style="padding: 0;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 1px solid var(--border-glass);">
+        <th style="padding: 1rem;">Email</th>
+        <th style="padding: 1rem;">Role</th>
+        <th style="padding: 1rem;">Joined</th>
+        <th style="padding: 1rem; text-align: right;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr style="border-bottom: 1px solid var(--border-glass);">
+          <td style="padding: 1rem;"><%= user.email %></td>
+          <td style="padding: 1rem;">
+            <span class="badge" style="background: var(--bg-secondary); border: 1px solid var(--border-glass); text-transform: uppercase; font-size: 0.7rem;">
+              <%= user.role %>
+            </span>
+          </td>
+          <td style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem;">
+            <%= user.created_at.strftime("%b %d, %Y") %>
+          </td>
+          <td style="padding: 1rem; text-align: right;">
+            <% if user != current_user %>
+              <%= button_to user_path(user), method: :delete, class: "btn btn-danger btn-sm", data: { turbo_confirm: "Delete user #{user.email}?" } do %>
+                🗑
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

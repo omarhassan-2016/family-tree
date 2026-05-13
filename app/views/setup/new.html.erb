@@ -1,0 +1,37 @@
+<% content_for(:title) { "First Run Setup — Family Tree" } %>
+
+<div style="max-width: 400px; margin: 4rem auto; padding: 2rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-glass);">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Welcome to Family Tree</h1>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Please create the initial Admin account to secure your database.</p>
+  </div>
+
+  <%= form_with(model: @user, url: setup_path, local: true) do |f| %>
+    <% if @user.errors.any? %>
+      <div style="background: rgba(248,113,113,0.1); border-left: 4px solid var(--danger); padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm); font-size: 0.85rem;">
+        <ul style="margin: 0; padding-left: 1.5rem; color: var(--danger);">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, class: "form-input", required: true, autofocus: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, class: "form-input", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation, "Confirm Password", class: "form-label" %>
+      <%= f.password_field :password_confirmation, class: "form-input", required: true %>
+    </div>
+
+    <%= f.submit "Create Admin Account", class: "btn btn-primary", style: "width: 100%; justify-content: center; margin-top: 1rem;" %>
+  <% end %>
+</div>

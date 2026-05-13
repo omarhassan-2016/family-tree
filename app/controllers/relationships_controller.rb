@@ -1,5 +1,6 @@
 class RelationshipsController < ApplicationController
   before_action :set_person
+  before_action :require_contributor
 
   def new
     @role = params[:role] # "parent", "spouse", "child"

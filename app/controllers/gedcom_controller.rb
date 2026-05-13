@@ -1,4 +1,5 @@
 class GedcomController < ApplicationController
+  before_action :require_contributor, only: [:new, :create]
   def new
   end
 

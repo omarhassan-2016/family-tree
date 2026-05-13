@@ -1,5 +1,6 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :edit, :update, :destroy]
+  before_action :require_contributor, except: [:index, :show]
 
   def index
     @people = Person.order(:last_name, :first_name)

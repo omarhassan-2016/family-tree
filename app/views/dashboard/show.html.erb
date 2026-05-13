@@ -2,11 +2,13 @@
 
 <div class="page-header">
   <div>
-    <h2>Dashboard</h2>
-    <p class="subtitle">Overview of your family tree</p>
+    <h2><%= t('dashboard.title', default: 'Dashboard') %></h2>
+    <p class="subtitle"><%= t('dashboard.subtitle', default: 'Overview of your family tree') %></p>
   </div>
-  <%= link_to new_person_path, class: "btn btn-primary" do %>
-    ➕ Add Person
+  <% if current_user&.admin? || current_user&.contributor? %>
+    <%= link_to new_person_path, class: "btn btn-primary" do %>
+      ➕ <%= t('dashboard.add_person', default: 'Add Person') %>
+    <% end %>
   <% end %>
 </div>
 
@@ -14,19 +16,19 @@
 <div class="stats-row">
   <div class="stat-card">
     <div class="stat-value"><%= @total_people %></div>
-    <div class="stat-label">People</div>
+    <div class="stat-label"><%= t('dashboard.stats.people') %></div>
   </div>
   <div class="stat-card">
     <div class="stat-value"><%= @total_families %></div>
-    <div class="stat-label">Families</div>
+    <div class="stat-label"><%= t('dashboard.stats.families') %></div>
   </div>
   <div class="stat-card">
     <div class="stat-value"><%= @earliest_birth&.year || '—' %></div>
-    <div class="stat-label">Earliest Birth</div>
+    <div class="stat-label"><%= t('dashboard.stats.earliest_birth') %></div>
   </div>
   <div class="stat-card">
     <div class="stat-value"><%= @latest_marriage&.year || '—' %></div>
-    <div class="stat-label">Latest Marriage</div>
+    <div class="stat-label"><%= t('dashboard.stats.latest_marriage') %></div>
   </div>
 </div>
 
@@ -35,7 +37,7 @@
   <div class="charts-row">
     <%# Gender Distribution %>
     <div class="chart-card">
-      <h4 class="chart-title">Gender Distribution</h4>
+      <h4 class="chart-title"><%= t('dashboard.charts.gender') %></h4>
       <div class="donut-chart">
         <% total = [@male_count + @female_count + @unknown_count, 1].max %>
         <% male_pct = (@male_count.to_f / total * 100).round %>
@@ -51,13 +53,13 @@
             <% offset += pct %>
           <% end %>
           <text x="60" y="56" text-anchor="middle" fill="var(--text-primary)" font-size="18" font-weight="700" font-family="Inter"><%= @total_people %></text>
-          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter">total</text>
+          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter"><%= t('dashboard.charts.total') %></text>
         </svg>
         <div class="donut-legend">
-          <div class="legend-item"><span class="legend-dot" style="background: var(--male);"></span> Male <strong><%= @male_count %></strong></div>
-          <div class="legend-item"><span class="legend-dot" style="background: var(--female);"></span> Female <strong><%= @female_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--male);"></span> <%= t('dashboard.charts.male') %> <strong><%= @male_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--female);"></span> <%= t('dashboard.charts.female') %> <strong><%= @female_count %></strong></div>
           <% if @unknown_count > 0 %>
-            <div class="legend-item"><span class="legend-dot" style="background: var(--unknown-gender);"></span> Unknown <strong><%= @unknown_count %></strong></div>
+            <div class="legend-item"><span class="legend-dot" style="background: var(--unknown-gender);"></span> <%= t('dashboard.charts.unknown') %> <strong><%= @unknown_count %></strong></div>
           <% end %>
         </div>
       </div>
@@ -65,7 +67,7 @@
 
     <%# Living vs Deceased %>
     <div class="chart-card">
-      <h4 class="chart-title">Living vs Deceased</h4>
+      <h4 class="chart-title"><%= t('dashboard.charts.living') %></h4>
       <div class="donut-chart">
         <% alive_total = [@living_count + @deceased_count, 1].max %>
         <% alive_pct = (@living_count.to_f / alive_total * 100).round %>
@@ -78,11 +80,11 @@
                   stroke-dashoffset="<%= -(alive_pct * 2.827).round(1) %>"
                   transform="rotate(-90 60 60)" />
           <text x="60" y="56" text-anchor="middle" fill="var(--text-primary)" font-size="18" font-weight="700" font-family="Inter"><%= alive_pct %>%</text>
-          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter">living</text>
+          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter"><%= t('dashboard.charts.living_label').downcase %></text>
         </svg>
         <div class="donut-legend">
-          <div class="legend-item"><span class="legend-dot" style="background: var(--success);"></span> Living <strong><%= @living_count %></strong></div>
-          <div class="legend-item"><span class="legend-dot" style="background: var(--text-muted);"></span> Deceased <strong><%= @deceased_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--success);"></span> <%= t('dashboard.charts.living_label') %> <strong><%= @living_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--text-muted);"></span> <%= t('dashboard.charts.deceased_label') %> <strong><%= @deceased_count %></strong></div>
         </div>
       </div>
     </div>
@@ -90,19 +92,19 @@
     <%# Lifespan Stats %>
     <% if @avg_lifespan %>
       <div class="chart-card">
-        <h4 class="chart-title">Lifespan Statistics</h4>
+        <h4 class="chart-title"><%= t('dashboard.charts.lifespan') %></h4>
         <div class="lifespan-stats">
           <div class="lifespan-stat">
             <div class="lifespan-value"><%= @avg_lifespan %></div>
-            <div class="lifespan-label">Avg. years</div>
+            <div class="lifespan-label"><%= t('dashboard.charts.avg_years') %></div>
           </div>
           <div class="lifespan-stat">
             <div class="lifespan-value"><%= @max_lifespan %></div>
-            <div class="lifespan-label">Longest</div>
+            <div class="lifespan-label"><%= t('dashboard.charts.oldest') %></div>
           </div>
           <div class="lifespan-stat">
             <div class="lifespan-value"><%= @min_lifespan %></div>
-            <div class="lifespan-label">Shortest</div>
+            <div class="lifespan-label"><%= t('dashboard.charts.shortest', default: 'Shortest') %></div>
           </div>
         </div>
       </div>
@@ -157,7 +159,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
       <% if @on_this_day_births.any? %>
         <div>
-          <strong style="color: var(--success); font-size: 0.85rem; text-transform: uppercase;">👶 Born Today</strong>
+          <strong style="color: var(--success); font-size: 0.85rem; text-transform: uppercase;">👶 <%= t('dashboard.born_today') %></strong>
           <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
             <% @on_this_day_births.each do |p| %>
               <li style="margin-bottom: 0.25rem;"><%= link_to p.full_name, person_path(p) %> (<%= p.birth_date.year %>)</li>
@@ -168,7 +170,7 @@
 
       <% if @on_this_day_deaths.any? %>
         <div>
-          <strong style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">🕊️ Died Today</strong>
+          <strong style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">🕊️ <%= t('dashboard.died_today') %></strong>
           <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
             <% @on_this_day_deaths.each do |p| %>
               <li style="margin-bottom: 0.25rem;"><%= link_to p.full_name, person_path(p) %> (<%= p.death_date.year %>)</li>
@@ -179,7 +181,7 @@
 
       <% if @on_this_day_marriages.any? %>
         <div>
-          <strong style="color: var(--warning); font-size: 0.85rem; text-transform: uppercase;">💍 Married Today</strong>
+          <strong style="color: var(--warning); font-size: 0.85rem; text-transform: uppercase;">💍 <%= t('dashboard.married_today') %></strong>
           <ul style="list-style: none; padding: 0; margin-top: 0.5rem; font-size: 0.9rem;">
             <% @on_this_day_marriages.each do |f| %>
               <li style="margin-bottom: 0.25rem;"><%= link_to "Family of #{f.people.map(&:first_name).join(' & ')}", family_path(f) %> (<%= f.marriage_date.year %>)</li>
@@ -193,8 +195,8 @@
 
 <%# --- Recently Updated --- %>
 <div class="section-header" style="margin-top: 2rem;">
-  <h3>Recently Updated</h3>
-  <%= link_to "View All →", people_path, class: "btn btn-secondary btn-sm" %>
+  <h3><%= t('dashboard.recently_updated') %></h3>
+  <%= link_to t('dashboard.view_all_arrow'), people_path, class: "btn btn-secondary btn-sm" %>
 </div>
 
 <div class="card-grid">
@@ -206,10 +208,10 @@
 <% if @total_people == 0 %>
   <div class="empty-state" style="margin-top: 2rem;">
     <span class="icon">🌱</span>
-    <p>Your family tree is empty. Start by adding a person or importing a GEDCOM file.</p>
+    <p><%= t('dashboard.empty_tree') %></p>
     <div class="btn-group" style="justify-content: center; margin-top: 1rem;">
-      <%= link_to "Add Person", new_person_path, class: "btn btn-primary" %>
-      <%= link_to "Import GEDCOM", new_gedcom_path, class: "btn btn-secondary" %>
+      <%= link_to t('dashboard.add_person_btn'), new_person_path, class: "btn btn-primary" %>
+      <%= link_to t('dashboard.import_gedcom_btn'), new_gedcom_path, class: "btn btn-secondary" %>
     </div>
   </div>
 <% end %>

@@ -1,31 +1,103 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  sidebar:
+    title: "Family Tree"
+    dashboard: "Dashboard"
+    people: "People"
+    relationships: "Relationships"
+    tree_health: "Tree Health"
+    map_view: "Map View"
+    import_gedcom: "Import GEDCOM"
+    export_gedcom: "Export GEDCOM"
+    manage_users: "Manage Users"
+    sign_out: "Sign Out"
+    logged_in_as: "Logged in as"
+    search_placeholder: "Search people..."
+  dashboard:
+    title: "Dashboard"
+    subtitle: "Overview of your family tree"
+    quick_actions: "Quick Actions"
+    add_person: "Add Person"
+    view_all: "View All People"
+    import: "Import Data"
+    on_this_day: "On This Day"
+    no_events: "No events occurred on this day."
+    births: "Births"
+    deaths: "Deaths"
+    marriages: "Marriages"
+    born_today: "Born Today"
+    died_today: "Died Today"
+    married_today: "Married Today"
+    recently_updated: "Recently Updated"
+    view_all_arrow: "View All →"
+    empty_tree: "Your family tree is empty. Start by adding a person or importing a GEDCOM file."
+    add_person_btn: "Add Person"
+    import_gedcom_btn: "Import GEDCOM"
+    stats:
+      people: "People"
+      families: "Families"
+      earliest_birth: "Earliest Birth"
+      latest_marriage: "Latest Marriage"
+    charts:
+      gender: "Gender Distribution"
+      living: "Living vs Deceased"
+      lifespan: "Lifespan Statistics"
+      decades: "Births by Decade"
+      surnames: "Top Surnames"
+      male: "Male"
+      female: "Female"
+      unknown: "Unknown"
+      total: "total"
+      living_label: "Living"
+      deceased_label: "Deceased"
+      avg_years: "Avg. years"
+      oldest: "oldest"
+  people:
+    index:
+      title: "People Directory"
+      subtitle: "%{count} individuals in your tree"
+      add_person: "Add Person"
+      export_csv: "Export CSV"
+      search_placeholder: "Name..."
+      filter_search: "Search"
+      filter_gender: "Gender"
+      filter_status: "Status"
+      apply_filters: "Apply Filters"
+      table:
+        name: "Name"
+        gender: "Gender"
+        lifespan: "Lifespan"
+        age: "Age"
+        actions: "Actions"
+        view: "View"
+        edit: "Edit"
+        delete: "Delete"
+    show:
+      tree: "Tree"
+      fan_chart: "Fan Chart"
+      pdf: "PDF"
+      edit: "Edit"
+      delete: "Delete"
+      confirm_delete: "Are you sure you want to delete %{name}?"
+      personal_details: "Personal Details"
+      first_name: "First Name"
+      last_name: "Last Name"
+      maiden_name: "Maiden Name"
+      gender: "Gender"
+      birth_date: "Birth Date"
+      birth_place: "Birth Place"
+      death_date: "Death Date"
+      death_place: "Death Place"
+      notes: "Notes"
+      rich_notes: "Rich Notes & Documents"
+      birth: "Birth"
+      death: "Death"
+      bio: "Biography & Notes"
+      parents: "Parents"
+      spouses: "Spouses / Partners"
+      children: "Children"
+      siblings: "Siblings"
+      discussion: "Discussion"
+      add: "Add"
+      no_recorded: "No %{relation} recorded"
+      post_comment: "Post Comment"
+      comment_placeholder: "Add a comment or observation..."

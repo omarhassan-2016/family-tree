@@ -1,0 +1,16 @@
+<div class="comment" style="padding: 1rem; border: 1px solid var(--border-glass); border-radius: var(--radius-sm); margin-bottom: 1rem; background: var(--bg-card);">
+  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+    <strong style="color: var(--accent-light);"><%= comment.user.email %></strong>
+    <span style="font-size: 0.8rem; color: var(--text-muted);">
+      <%= time_ago_in_words(comment.created_at) %> ago
+      
+      <% if comment.user == current_user || current_user.admin? %>
+        · 
+        <%= button_to "Delete", comment_path(comment), method: :delete, form: { style: "display: inline;" }, class: "btn btn-sm", style: "color: var(--danger); background: transparent; padding: 0;" %>
+      <% end %>
+    </span>
+  </div>
+  <div style="color: var(--text-primary); font-size: 0.95rem; white-space: pre-wrap;">
+    <%= comment.body %>
+  </div>
+</div>

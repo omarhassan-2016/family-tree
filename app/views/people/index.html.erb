@@ -2,15 +2,17 @@
 
 <div class="page-header">
   <div>
-    <h2>People</h2>
+    <h2><%= t('people.index.title', default: 'People Directory') %></h2>
     <p class="subtitle"><%= @people.total_count %> individuals in your tree</p>
   </div>
   <div class="btn-group">
     <%= link_to people_path(format: :csv, **request.query_parameters.except(:page)), class: "btn btn-secondary", data: { turbo: false } do %>
-      📥 Export CSV
+      📥 <%= t('people.index.export_csv', default: 'Export CSV') %>
     <% end %>
-    <%= link_to new_person_path, class: "btn btn-primary" do %>
-      ➕ Add Person
+    <% if current_user&.admin? || current_user&.contributor? %>
+      <%= link_to new_person_path, class: "btn btn-primary" do %>
+        ➕ <%= t('people.index.add_person', default: 'Add Person') %>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -18,19 +20,19 @@
 <div class="card" style="margin-bottom: 2rem; padding: 1rem;">
   <%= form_with url: people_path, method: :get, local: true, class: "form-row", style: "align-items: flex-end; margin: 0;" do |f| %>
     <div class="form-group" style="margin: 0;">
-      <label class="form-label" style="font-size: 0.8rem;">Search</label>
-      <%= f.text_field :query, value: params[:query], placeholder: "Name...", class: "form-input", style: "padding: 0.5rem;" %>
+      <label class="form-label" style="font-size: 0.8rem;"><%= t('people.index.filter_search') %></label>
+      <%= f.text_field :query, value: params[:query], placeholder: t('people.index.search_placeholder'), class: "form-input", style: "padding: 0.5rem;" %>
     </div>
     <div class="form-group" style="margin: 0;">
-      <label class="form-label" style="font-size: 0.8rem;">Gender</label>
+      <label class="form-label" style="font-size: 0.8rem;"><%= t('people.index.filter_gender') %></label>
       <%= f.select :gender, Person.genders.keys.map { |g| [g.humanize, g] }, { include_blank: "All", selected: params[:gender] }, class: "form-select", style: "padding: 0.5rem;" %>
     </div>
     <div class="form-group" style="margin: 0;">
-      <label class="form-label" style="font-size: 0.8rem;">Status</label>
+      <label class="form-label" style="font-size: 0.8rem;"><%= t('people.index.filter_status') %></label>
       <%= f.select :status, [["Living", "living"], ["Deceased", "deceased"]], { include_blank: "All", selected: params[:status] }, class: "form-select", style: "padding: 0.5rem;" %>
     </div>
     <div class="form-group" style="margin: 0;">
-      <%= f.submit "Filter", class: "btn btn-secondary", style: "padding: 0.5rem 1rem;" %>
+      <%= f.submit t('people.index.apply_filters', default: 'Filter'), class: "btn btn-secondary", style: "padding: 0.5rem 1rem;" %>
       <% if params[:query].present? || params[:gender].present? || params[:status].present? %>
         <%= link_to "Clear", people_path, class: "btn", style: "font-size: 0.85rem;" %>
       <% end %>
@@ -47,7 +49,7 @@
 <% if @people.empty? %>
   <div class="empty-state">
     <span class="icon">👤</span>
-    <p>No people found.</p>
+    <p><%= t('dashboard.empty_tree', default: 'No people found.') %></p>
   </div>
 <% end %>
 

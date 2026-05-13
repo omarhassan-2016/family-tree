@@ -1,12 +1,26 @@
 Rails.application.routes.draw do
   root "dashboard#show"
 
+  # Authentication & Setup
+  get "setup", to: "setup#new"
+  post "setup", to: "setup#create"
+  get "login", to: "sessions#new"
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy"
+
+  patch "locale", to: "locales#update"
+
+  resources :users, except: [:show]
+
   resources :people do
+    resources :comments, only: [:create]
     resource :tree, only: :show, controller: "tree"
     resource :fan_chart, only: :show, controller: "fan_chart"
     resource :report, only: :show, controller: "reports"
     resources :relationships, only: [:new, :create, :destroy]
   end
+
+  resources :comments, only: [:destroy]
 
   resources :families, only: [:show, :create, :destroy]
   resources :search, only: :index

@@ -22,65 +22,68 @@
   </div>
   <div class="btn-group">
     <%= link_to person_tree_path(@person), class: "btn btn-secondary" do %>
-      🌳 Tree
+      🌳 <%= t('people.show.tree', default: 'Tree') %>
     <% end %>
     <%= link_to person_fan_chart_path(@person), class: "btn btn-secondary" do %>
-      🌀 Fan Chart
+      🌀 <%= t('people.show.fan_chart', default: 'Fan Chart') %>
     <% end %>
     <%= link_to person_report_path(@person), class: "btn btn-secondary", data: { turbo: false } do %>
-      📄 PDF
+      📄 <%= t('people.show.pdf', default: 'PDF') %>
     <% end %>
-    <%= link_to edit_person_path(@person), class: "btn btn-secondary" do %>
-      ✏️ Edit
-    <% end %>
-    <%= button_to person_path(@person), method: :delete, class: "btn btn-danger btn-sm",
-        data: { turbo_confirm: "Are you sure you want to delete #{@person.full_name}?" } do %>
-      🗑 Delete
+    <% if current_user&.admin? || current_user&.contributor? %>
+      <%= link_to edit_person_path(@person), class: "btn btn-secondary" do %>
+        ✏️ <%= t('people.show.edit', default: 'Edit') %>
+      <% end %>
+      <%= button_to person_path(@person), method: :delete, class: "btn btn-danger btn-sm",
+          data: { turbo_confirm: t('people.show.confirm_delete', name: @person.full_name, default: "Are you sure you want to delete #{@person.full_name}?") } do %>
+        🗑 <%= t('people.show.delete', default: 'Delete') %>
+      <% end %>
     <% end %>
   </div>
 </div>
 
 <%= turbo_frame_tag dom_id(@person, :details) do %>
   <div class="card" style="margin-bottom: 2rem;">
+    <h3><%= t('people.show.personal_details', default: 'Personal Details') %></h3>
     <div class="detail-grid">
       <div class="detail-item">
-        <div class="label">First Name</div>
+        <div class="label"><%= t('people.show.first_name') %></div>
         <div class="value"><%= @person.first_name %></div>
       </div>
       <div class="detail-item">
-        <div class="label">Last Name</div>
+        <div class="label"><%= t('people.show.last_name') %></div>
         <div class="value"><%= @person.last_name || '—' %></div>
       </div>
       <% if @person.maiden_name.present? %>
         <div class="detail-item">
-          <div class="label">Maiden Name</div>
+          <div class="label"><%= t('people.show.maiden_name') %></div>
           <div class="value"><%= @person.maiden_name %></div>
         </div>
       <% end %>
       <div class="detail-item">
-        <div class="label">Gender</div>
+        <div class="label"><%= t('people.show.gender') %></div>
         <div class="value"><%= @person.gender.humanize %></div>
       </div>
       <div class="detail-item">
-        <div class="label">Birth Date</div>
+        <div class="label"><%= t('people.show.birth_date') %></div>
         <div class="value"><%= @person.birth_date&.strftime("%B %d, %Y") || '—' %></div>
       </div>
       <div class="detail-item">
-        <div class="label">Birth Place</div>
+        <div class="label"><%= t('people.show.birth_place') %></div>
         <div class="value"><%= @person.birth_place || '—' %></div>
       </div>
       <div class="detail-item">
-        <div class="label">Death Date</div>
+        <div class="label"><%= t('people.show.death_date') %></div>
         <div class="value"><%= @person.death_date&.strftime("%B %d, %Y") || '—' %></div>
       </div>
       <div class="detail-item">
-        <div class="label">Death Place</div>
+        <div class="label"><%= t('people.show.death_place') %></div>
         <div class="value"><%= @person.death_place || '—' %></div>
       </div>
     </div>
     <% if @person.notes.present? %>
       <div class="detail-item">
-        <div class="label">Notes</div>
+        <div class="label"><%= t('people.show.notes') %></div>
         <div class="value"><%= simple_format(@person.notes) %></div>
       </div>
     <% end %>
@@ -90,7 +93,7 @@
     <div class="card" style="margin-bottom: 2rem; background: var(--bg-card); border-color: var(--border-accent);">
       <div class="detail-grid">
         <div class="detail-item" style="grid-column: 1 / -1;">
-          <div class="label" style="font-size: 1rem; color: var(--accent); margin-bottom: 1rem;">Rich Notes & Documents</div>
+          <div class="label" style="font-size: 1rem; color: var(--accent); margin-bottom: 1rem;"><%= t('people.show.rich_notes') %></div>
           <div class="value trix-content">
             <%= @person.rich_notes %>
           </div>
@@ -130,9 +133,11 @@
 
 <div class="relationship-section">
   <div class="section-header">
-    <h3>👨‍👩 Parents</h3>
-    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "parent"),
-        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <h3>👨‍👩 <%= t('people.show.parents', default: 'Parents') %></h3>
+    <% if current_user&.admin? || current_user&.contributor? %>
+      <%= link_to "➕ #{t('people.show.add', default: 'Add')}", new_person_relationship_path(@person, role: "parent"),
+          class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <% end %>
   </div>
   <div class="relationship-list" id="parents_list">
     <% @parents.each do |parent| %>
@@ -146,9 +151,11 @@
 
 <div class="relationship-section">
   <div class="section-header">
-    <h3>💑 Spouses / Partners</h3>
-    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "spouse"),
-        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <h3>💑 <%= t('people.show.spouses', default: 'Spouses / Partners') %></h3>
+    <% if current_user&.admin? || current_user&.contributor? %>
+      <%= link_to "➕ #{t('people.show.add', default: 'Add')}", new_person_relationship_path(@person, role: "spouse"),
+          class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <% end %>
   </div>
   <div class="relationship-list" id="spouses_list">
     <% @spouses.each do |spouse| %>
@@ -162,9 +169,11 @@
 
 <div class="relationship-section">
   <div class="section-header">
-    <h3>👧 Children</h3>
-    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "child"),
-        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <h3>👧 <%= t('people.show.children', default: 'Children') %></h3>
+    <% if current_user&.admin? || current_user&.contributor? %>
+      <%= link_to "➕ #{t('people.show.add', default: 'Add')}", new_person_relationship_path(@person, role: "child"),
+          class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+    <% end %>
   </div>
   <div class="relationship-list" id="children_list">
     <% @children.each do |child| %>
@@ -178,7 +187,7 @@
 
 <div class="relationship-section">
   <div class="section-header">
-    <h3>👫 Siblings</h3>
+    <h3>👫 <%= t('people.show.siblings', default: 'Siblings') %></h3>
   </div>
   <div class="relationship-list" id="siblings_list">
     <% @siblings.each do |sibling| %>
@@ -186,6 +195,26 @@
     <% end %>
     <% if @siblings.empty? %>
       <div class="empty-state"><p>No siblings recorded</p></div>
+    <% end %>
+  </div>
+</div>
+
+<%# --- Discussion / Comments --- %>
+<div class="relationship-section" style="margin-top: 3rem;">
+  <div class="section-header">
+    <h3>💬 <%= t('people.show.discussion', default: 'Discussion') %></h3>
+  </div>
+  
+  <div id="comments">
+    <%= render @person.comments.order(created_at: :asc) %>
+  </div>
+
+  <div style="margin-top: 1.5rem;">
+    <%= form_with(model: [@person, Comment.new], local: true) do |f| %>
+      <div class="form-group">
+        <%= f.text_area :body, class: "form-textarea", placeholder: t('people.show.comment_placeholder', default: "Add a comment or observation about %{name}...", name: @person.first_name), rows: 3, required: true %>
+      </div>
+      <%= f.submit t('people.show.post_comment', default: 'Post Comment'), class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>

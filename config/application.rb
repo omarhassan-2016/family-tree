@@ -23,5 +23,9 @@ module FamilyTree
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # I18n configuration
+    config.i18n.available_locales = [:en, :ar]
+    config.i18n.default_locale = :ar
   end
 end

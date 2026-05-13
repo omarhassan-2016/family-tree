@@ -12,7 +12,7 @@
       <% if person.life_span %>
         <div class="dates">
           <%= person.life_span %>
-          <% if person.age %><span class="age-badge">age <%= person.age %></span><% end %>
+          <% if person.age %><span class="age-badge"><%= t('people.index.table.age', default: 'Age') %> <%= person.age %></span><% end %>
         </div>
       <% end %>
       <% if person.birth_place.present? %>
