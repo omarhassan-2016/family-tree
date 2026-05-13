@@ -1,0 +1,17 @@
+default: &default
+ adapter: postgresql
+ encoding: unicode
+ pool: 5
+ username: omarhassan
+ password: 403102
+ host: localhost
+ advisory_locks: false
+ gssencmode: disable
+
+development:
+ <<: *default
+ database: family_tree
+
+test:
+ <<: *default
+ database: family_tree_test
