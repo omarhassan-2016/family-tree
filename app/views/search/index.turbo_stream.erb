@@ -1,0 +1,10 @@
+<%= turbo_stream.update "search_results" do %>
+  <% @people.each do |person| %>
+    <%= render partial: "people/person_card", locals: { person: person } %>
+  <% end %>
+  <% if @people.empty? && @query.present? %>
+    <div class="empty-state" style="padding: 1rem;">
+      <p>No results for "<%= @query %>"</p>
+    </div>
+  <% end %>
+<% end %>

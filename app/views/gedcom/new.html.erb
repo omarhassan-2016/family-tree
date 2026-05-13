@@ -1,0 +1,26 @@
+<% content_for(:title) { "Import GEDCOM — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>Import GEDCOM File</h2>
+    <p class="subtitle">Upload a .ged file to import individuals and families</p>
+  </div>
+</div>
+
+<div class="card" style="max-width: 600px;">
+  <%= form_with url: gedcom_path, method: :post, multipart: true, local: true do |f| %>
+    <div class="form-group">
+      <%= f.label :file, "Select GEDCOM File (.ged)", class: "form-label" %>
+      <%= f.file_field :file, accept: ".ged,.gedcom", class: "form-input" %>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+      Supports GEDCOM 5.5.1 format. Existing data will be preserved — imported records will be added alongside current data.
+    </p>
+
+    <div class="btn-group">
+      <%= f.submit "Import", class: "btn btn-primary" %>
+      <%= link_to "Cancel", root_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

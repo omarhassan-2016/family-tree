@@ -1,0 +1,12 @@
+<% content_for(:title) { "Edit #{@person.full_name} — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>Edit <%= @person.full_name %></h2>
+    <p class="subtitle">Update personal details</p>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", person: @person %>
+</div>

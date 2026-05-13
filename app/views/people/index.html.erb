@@ -1,0 +1,26 @@
+<% content_for(:title) { "People — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>People</h2>
+    <p class="subtitle"><%= @people.total_count %> individuals in your tree</p>
+  </div>
+  <%= link_to new_person_path, class: "btn btn-primary" do %>
+    ➕ Add Person
+  <% end %>
+</div>
+
+<div class="card-grid" id="people_list">
+  <% @people.each do |person| %>
+    <%= render partial: "people/person_card", locals: { person: person } %>
+  <% end %>
+</div>
+
+<% if @people.empty? %>
+  <div class="empty-state">
+    <span class="icon">👤</span>
+    <p>No people found.</p>
+  </div>
+<% end %>
+
+<%= paginate @people %>

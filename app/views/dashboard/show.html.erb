@@ -1,0 +1,52 @@
+<% content_for(:title) { "Dashboard — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>Dashboard</h2>
+    <p class="subtitle">Overview of your family tree</p>
+  </div>
+  <%= link_to new_person_path, class: "btn btn-primary" do %>
+    ➕ Add Person
+  <% end %>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-value"><%= @total_people %></div>
+    <div class="stat-label">People</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @total_families %></div>
+    <div class="stat-label">Families</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @total_people > 0 ? Person.where.not(birth_date: nil).minimum(:birth_date)&.year || '—' : '—' %></div>
+    <div class="stat-label">Earliest Birth</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= Family.maximum(:marriage_date)&.year || '—' %></div>
+    <div class="stat-label">Latest Marriage</div>
+  </div>
+</div>
+
+<div class="section-header">
+  <h3>Recently Updated</h3>
+  <%= link_to "View All →", people_path, class: "btn btn-secondary btn-sm" %>
+</div>
+
+<div class="card-grid">
+  <% @recent_people.each do |person| %>
+    <%= render partial: "people/person_card", locals: { person: person } %>
+  <% end %>
+</div>
+
+<% if @total_people == 0 %>
+  <div class="empty-state" style="margin-top: 2rem;">
+    <span class="icon">🌱</span>
+    <p>Your family tree is empty. Start by adding a person or importing a GEDCOM file.</p>
+    <div class="btn-group" style="justify-content: center; margin-top: 1rem;">
+      <%= link_to "Add Person", new_person_path, class: "btn btn-primary" %>
+      <%= link_to "Import GEDCOM", new_gedcom_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+<% end %>

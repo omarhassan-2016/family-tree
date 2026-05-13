@@ -1,0 +1,12 @@
+<% content_for(:title) { "New Person — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>Add New Person</h2>
+    <p class="subtitle">Enter details for the new individual</p>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", person: @person %>
+</div>

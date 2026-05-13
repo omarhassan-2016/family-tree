@@ -1,0 +1,142 @@
+<% content_for(:title) { "#{@person.full_name} — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <div class="person-detail-header">
+      <div class="person-avatar <%= @person.gender %>">
+        <%= @person.first_name[0].upcase %><%= @person.last_name&.first&.upcase %>
+      </div>
+      <div>
+        <div class="name"><%= @person.full_name %></div>
+        <div class="meta">
+          <%= @person.gender.humanize %>
+          <% if @person.life_span %> · <%= @person.life_span %><% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-group">
+    <%= link_to person_tree_path(@person), class: "btn btn-secondary" do %>
+      🌳 View Tree
+    <% end %>
+    <%= link_to edit_person_path(@person), class: "btn btn-secondary" do %>
+      ✏️ Edit
+    <% end %>
+    <%= button_to person_path(@person), method: :delete, class: "btn btn-danger btn-sm",
+        data: { turbo_confirm: "Are you sure you want to delete #{@person.full_name}?" } do %>
+      🗑 Delete
+    <% end %>
+  </div>
+</div>
+
+<%= turbo_frame_tag dom_id(@person, :details) do %>
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">First Name</div>
+        <div class="value"><%= @person.first_name %></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Last Name</div>
+        <div class="value"><%= @person.last_name || '—' %></div>
+      </div>
+      <% if @person.maiden_name.present? %>
+        <div class="detail-item">
+          <div class="label">Maiden Name</div>
+          <div class="value"><%= @person.maiden_name %></div>
+        </div>
+      <% end %>
+      <div class="detail-item">
+        <div class="label">Gender</div>
+        <div class="value"><%= @person.gender.humanize %></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Birth Date</div>
+        <div class="value"><%= @person.birth_date&.strftime("%B %d, %Y") || '—' %></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Birth Place</div>
+        <div class="value"><%= @person.birth_place || '—' %></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Death Date</div>
+        <div class="value"><%= @person.death_date&.strftime("%B %d, %Y") || '—' %></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Death Place</div>
+        <div class="value"><%= @person.death_place || '—' %></div>
+      </div>
+    </div>
+    <% if @person.notes.present? %>
+      <div class="detail-item">
+        <div class="label">Notes</div>
+        <div class="value"><%= simple_format(@person.notes) %></div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%# --- Relationship Sections --- %>
+<%= turbo_frame_tag "relationship_modal" %>
+
+<div class="relationship-section">
+  <div class="section-header">
+    <h3>👨‍👩 Parents</h3>
+    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "parent"),
+        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+  </div>
+  <div class="relationship-list" id="parents_list">
+    <% @parents.each do |parent| %>
+      <%= render partial: "people/person_card", locals: { person: parent } %>
+    <% end %>
+    <% if @parents.empty? %>
+      <div class="empty-state"><p>No parents recorded</p></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="relationship-section">
+  <div class="section-header">
+    <h3>💑 Spouses / Partners</h3>
+    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "spouse"),
+        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+  </div>
+  <div class="relationship-list" id="spouses_list">
+    <% @spouses.each do |spouse| %>
+      <%= render partial: "people/person_card", locals: { person: spouse } %>
+    <% end %>
+    <% if @spouses.empty? %>
+      <div class="empty-state"><p>No spouses recorded</p></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="relationship-section">
+  <div class="section-header">
+    <h3>👧 Children</h3>
+    <%= link_to "➕ Add", new_person_relationship_path(@person, role: "child"),
+        class: "btn btn-secondary btn-sm", data: { turbo_frame: "relationship_modal" } %>
+  </div>
+  <div class="relationship-list" id="children_list">
+    <% @children.each do |child| %>
+      <%= render partial: "people/person_card", locals: { person: child } %>
+    <% end %>
+    <% if @children.empty? %>
+      <div class="empty-state"><p>No children recorded</p></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="relationship-section">
+  <div class="section-header">
+    <h3>👫 Siblings</h3>
+  </div>
+  <div class="relationship-list" id="siblings_list">
+    <% @siblings.each do |sibling| %>
+      <%= render partial: "people/person_card", locals: { person: sibling } %>
+    <% end %>
+    <% if @siblings.empty? %>
+      <div class="empty-state"><p>No siblings recorded</p></div>
+    <% end %>
+  </div>
+</div>

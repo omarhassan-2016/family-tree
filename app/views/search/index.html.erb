@@ -1,0 +1,19 @@
+<% content_for(:title) { "Search Results — Family Tree" } %>
+
+<div class="page-header">
+  <h2>Search Results</h2>
+  <p class="subtitle"><%= @people.count %> results for "<%= @query %>"</p>
+</div>
+
+<div class="card-grid">
+  <% @people.each do |person| %>
+    <%= render partial: "people/person_card", locals: { person: person } %>
+  <% end %>
+</div>
+
+<% if @people.empty? %>
+  <div class="empty-state">
+    <span class="icon">🔍</span>
+    <p>No people found matching "<%= @query %>"</p>
+  </div>
+<% end %>

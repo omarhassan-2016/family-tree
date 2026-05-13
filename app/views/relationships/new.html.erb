@@ -1,0 +1,54 @@
+<%= turbo_frame_tag "relationship_modal" do %>
+  <div class="modal-overlay" data-action="click->modal#close">
+    <div class="modal-content" data-action="click->modal#stop">
+      <h3>
+        Add <%= @role.humanize %> to <%= @person.full_name %>
+      </h3>
+
+      <%= form_with url: person_relationships_path(@person), method: :post, local: true do |f| %>
+        <%= f.hidden_field :role, value: @role %>
+
+        <div class="form-group">
+          <%= f.label :related_person_id, "Select Existing Person", class: "form-label" %>
+          <%= f.select :related_person_id,
+              @available_people.map { |p| ["#{p.full_name} #{p.life_span ? "(#{p.life_span})" : ''}", p.id] },
+              { include_blank: "— Select a person —" },
+              class: "form-select" %>
+        </div>
+
+        <div style="text-align: center; color: var(--text-muted); margin: 1rem 0; font-size: 0.85rem;">
+          — or create a new person —
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <%= label_tag "person[first_name]", "First Name", class: "form-label" %>
+            <%= text_field_tag "person[first_name]", nil, class: "form-input", placeholder: "First name" %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "person[last_name]", "Last Name", class: "form-label" %>
+            <%= text_field_tag "person[last_name]", nil, class: "form-input", placeholder: "Last name" %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <%= label_tag "person[gender]", "Gender", class: "form-label" %>
+            <%= select_tag "person[gender]",
+                options_for_select(Person.genders.keys.map { |g| [g.humanize, g] }),
+                include_blank: "Select gender", class: "form-select" %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "person[birth_date]", "Birth Date", class: "form-label" %>
+            <%= date_field_tag "person[birth_date]", nil, class: "form-input" %>
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 1.5rem;">
+          <%= f.submit "Add #{@role.humanize}", class: "btn btn-primary" %>
+          <%= link_to "Cancel", person_path(@person), class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,46 @@
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🌳</div>
+    <h1>Family Tree</h1>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="search-wrapper" data-controller="search">
+      <span class="search-icon">🔍</span>
+      <input type="text"
+             class="search-input"
+             placeholder="Search people..."
+             data-search-target="input"
+             data-action="input->search#search"
+             autocomplete="off">
+    </div>
+    <div id="search_results"></div>
+
+    <%= link_to root_path, class: "nav-link #{controller_name == 'dashboard' ? 'active' : ''}" do %>
+      <span class="icon">🏠</span>
+      <span>Dashboard</span>
+    <% end %>
+
+    <%= link_to people_path, class: "nav-link #{controller_name == 'people' ? 'active' : ''}" do %>
+      <span class="icon">👥</span>
+      <span>People</span>
+    <% end %>
+
+    <%= link_to new_person_path, class: "nav-link" do %>
+      <span class="icon">➕</span>
+      <span>Add Person</span>
+    <% end %>
+  </div>
+
+  <div class="sidebar-footer">
+    <%= link_to new_gedcom_path, class: "nav-link" do %>
+      <span class="icon">📥</span>
+      <span>Import GEDCOM</span>
+    <% end %>
+
+    <%= link_to export_gedcom_path, class: "nav-link", data: { turbo: false } do %>
+      <span class="icon">📤</span>
+      <span>Export GEDCOM</span>
+    <% end %>
+  </div>
+</nav>

@@ -4,6 +4,7 @@
     <title><%= content_for(:title) || "Family Tree" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="Family Tree Builder — Genealogy management application">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -18,6 +19,19 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="app-layout">
+      <%= render "layouts/sidebar" %>
+
+      <main class="main-content">
+        <% if notice %>
+          <div class="flash flash-notice" id="flash_notice">✓ <%= notice %></div>
+        <% end %>
+        <% if alert %>
+          <div class="flash flash-alert" id="flash_alert">⚠ <%= alert %></div>
+        <% end %>
+
+        <%= yield %>
+      </main>
+    </div>
   </body>
 </html>
