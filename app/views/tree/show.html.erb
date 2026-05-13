@@ -10,10 +10,21 @@
   </div>
 </div>
 
-<div class="card" style="padding: 0; overflow: hidden; min-height: 500px;">
-  <div id="tree-container"
-       data-controller="tree"
-       data-tree-url-value="<%= person_tree_path(@person, format: :json) %>"
-       style="width: 100%; height: 600px;">
+<div class="tree-layout" style="display: flex; gap: 1rem; position: relative;">
+  <div class="card" style="padding: 0; overflow: hidden; height: calc(100vh - 150px); flex: 1; border-radius: var(--radius-lg);">
+    <div id="tree-container"
+         data-controller="tree"
+         data-tree-url-value="<%= person_tree_path(@person, format: :json) %>"
+         data-tree-link-url-value="<%= link_person_tree_path(@person) %>"
+         style="width: 100%; height: 100%;">
+    </div>
+  </div>
+
+  <%# Quick View Sidebar %>
+  <div id="quick-view-sidebar" class="card" style="width: 350px; display: none; flex-direction: column; height: calc(100vh - 150px); overflow-y: auto; background: var(--bg-card); position: relative; transition: all 0.3s ease; border-left: 1px solid var(--border-accent);">
+    <button id="close-quick-view" class="btn btn-icon" style="position: absolute; top: 1rem; right: 1rem; border: none; background: transparent; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    <div id="quick-view-content" style="margin-top: 2rem;">
+      <%# Content injected via JS %>
+    </div>
   </div>
 </div>

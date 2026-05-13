@@ -14,7 +14,9 @@ Rails.application.routes.draw do
 
   resources :people do
     resources :comments, only: [:create]
-    resource :tree, only: :show, controller: "tree"
+    resource :tree, only: :show, controller: "tree" do
+      post :link
+    end
     resource :fan_chart, only: :show, controller: "fan_chart"
     resource :report, only: :show, controller: "reports"
     resources :relationships, only: [:new, :create, :destroy]

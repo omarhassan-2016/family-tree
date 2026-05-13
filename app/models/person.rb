@@ -15,7 +15,7 @@ class Person < ApplicationRecord
   def parents
     Person.joins(:family_members)
           .where(family_members: { family_id: families_as_child.select(:id),
-                                   role: [FamilyMember.roles[:father], FamilyMember.roles[:mother]] })
+                                   role: [ FamilyMember.roles[:father], FamilyMember.roles[:mother] ] })
           .distinct
   end
 
@@ -29,7 +29,7 @@ class Person < ApplicationRecord
   def spouses
     Person.joins(:family_members)
           .where(family_members: { family_id: families_as_parent.select(:id),
-                                   role: [FamilyMember.roles[:father], FamilyMember.roles[:mother]] })
+                                   role: [ FamilyMember.roles[:father], FamilyMember.roles[:mother] ] })
           .where.not(id: id)
           .distinct
   end
@@ -92,7 +92,7 @@ class Person < ApplicationRecord
     families_as_parent_records.each do |family|
       next unless family.marriage_date
       spouse = family.people.where.not(id: id).first
-      detail = [family.marriage_place, spouse ? "to #{spouse.full_name}" : nil].compact.join(" — ")
+      detail = [ family.marriage_place, spouse ? "to #{spouse.full_name}" : nil ].compact.join(" — ")
       events << { date: family.marriage_date, year: family.marriage_date.year, label: "Married", detail: detail, icon: "💍", type: "marriage" }
     end
 
@@ -110,7 +110,7 @@ class Person < ApplicationRecord
   # --- Display Helpers ---
 
   def full_name
-    [first_name, last_name].compact_blank.join(" ")
+    [ first_name, last_name ].compact_blank.join(" ")
   end
 
   def life_span
@@ -142,13 +142,13 @@ class Person < ApplicationRecord
   def families_as_parent
     Family.joins(:family_members)
           .where(family_members: { person_id: id,
-                                   role: [FamilyMember.roles[:father], FamilyMember.roles[:mother]] })
+                                   role: [ FamilyMember.roles[:father], FamilyMember.roles[:mother] ] })
   end
 
   def families_as_parent_records
     Family.joins(:family_members)
           .where(family_members: { person_id: id,
-                                   role: [FamilyMember.roles[:father], FamilyMember.roles[:mother]] })
+                                   role: [ FamilyMember.roles[:father], FamilyMember.roles[:mother] ] })
           .includes(:people)
   end
 
