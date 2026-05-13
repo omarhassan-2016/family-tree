@@ -1,0 +1,44 @@
+<% content_for(:title) { "New Person — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>Add New Person</h2>
+    <p class="subtitle">Enter details for the new individual</p>
+  </div>
+</div>
+
+<% if @duplicates.any? %>
+  <div class="duplicate-warning">
+    <div class="duplicate-warning-header">
+      <span class="duplicate-warning-icon">⚠️</span>
+      <h3>Possible duplicates found</h3>
+    </div>
+    <p>The following existing records look similar. Are you sure this isn't the same person?</p>
+    <div class="duplicate-list">
+      <% @duplicates.each do |dup| %>
+        <%= render partial: "people/person_card", locals: { person: dup } %>
+      <% end %>
+    </div>
+    <div class="btn-group" style="margin-top: 1.25rem;">
+      <%= form_with url: people_path, method: :post, local: true do |f| %>
+        <%= hidden_field_tag "person[first_name]", @person.first_name %>
+        <%= hidden_field_tag "person[last_name]", @person.last_name %>
+        <%= hidden_field_tag "person[maiden_name]", @person.maiden_name %>
+        <%= hidden_field_tag "person[suffix]", @person.suffix %>
+        <%= hidden_field_tag "person[gender]", @person.gender %>
+        <%= hidden_field_tag "person[birth_date]", @person.birth_date %>
+        <%= hidden_field_tag "person[birth_place]", @person.birth_place %>
+        <%= hidden_field_tag "person[death_date]", @person.death_date %>
+        <%= hidden_field_tag "person[death_place]", @person.death_place %>
+        <%= hidden_field_tag "person[notes]", @person.notes %>
+        <%= hidden_field_tag "confirmed", "true" %>
+        <button type="submit" class="btn btn-primary">Create Anyway</button>
+      <% end %>
+      <%= link_to "Cancel", people_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+<% end %>
+
+<div class="card">
+  <%= render "form", person: @person %>
+</div>

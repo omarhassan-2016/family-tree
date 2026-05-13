@@ -3,14 +3,19 @@
 <div class="page-header">
   <div>
     <div class="person-detail-header">
-      <div class="person-avatar <%= @person.gender %>">
-        <%= @person.first_name[0].upcase %><%= @person.last_name&.first&.upcase %>
-      </div>
+      <% if @person.avatar.attached? %>
+        <%= image_tag @person.avatar, class: "person-avatar-img-lg #{@person.gender}" %>
+      <% else %>
+        <div class="person-avatar <%= @person.gender %>" style="width:72px;height:72px;font-size:1.5rem;">
+          <%= @person.initials %>
+        </div>
+      <% end %>
       <div>
         <div class="name"><%= @person.full_name %></div>
         <div class="meta">
           <%= @person.gender.humanize %>
           <% if @person.life_span %> · <%= @person.life_span %><% end %>
+          <% if @person.age %> · Age <%= @person.age %><% end %>
         </div>
       </div>
     </div>
@@ -73,6 +78,31 @@
         <div class="value"><%= simple_format(@person.notes) %></div>
       </div>
     <% end %>
+  </div>
+<% end %>
+
+<%# --- Timeline Section --- %>
+<% if @timeline.any? %>
+  <div class="relationship-section">
+    <div class="section-header">
+      <h3>📅 Life Timeline</h3>
+    </div>
+    <div class="timeline">
+      <% @timeline.each do |event| %>
+        <div class="timeline-item timeline-<%= event[:type] %>">
+          <div class="timeline-marker">
+            <span class="timeline-icon"><%= event[:icon] %></span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-year"><%= event[:year] %></div>
+            <div class="timeline-label"><%= event[:label] %></div>
+            <% if event[:detail].present? %>
+              <div class="timeline-detail"><%= event[:detail] %></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 <% end %>
 

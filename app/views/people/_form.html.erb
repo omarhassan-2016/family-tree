@@ -10,6 +10,19 @@
     </div>
   <% end %>
 
+  <div class="form-group">
+    <label class="form-label">Profile Photo</label>
+    <div class="avatar-upload-wrapper">
+      <% if person.persisted? && person.avatar.attached? %>
+        <div class="avatar-preview">
+          <%= image_tag person.avatar, class: "avatar-preview-img" %>
+        </div>
+      <% end %>
+      <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/gif,image/webp", class: "form-input" %>
+      <p style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.3rem;">PNG, JPEG, GIF or WebP. Max 5MB.</p>
+    </div>
+  </div>
+
   <div class="form-row">
     <div class="form-group">
       <%= f.label :first_name, class: "form-label" %>

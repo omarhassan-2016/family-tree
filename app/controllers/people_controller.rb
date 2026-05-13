@@ -10,6 +10,7 @@ class PeopleController < ApplicationController
     @children = @person.children
     @spouses = @person.spouses
     @siblings = @person.siblings
+    @timeline = @person.timeline_events
   end
 
   def new
@@ -18,6 +19,19 @@ class PeopleController < ApplicationController
 
   def create
     @person = Person.new(person_params)
+
+    # Duplicate detection before save
+    @duplicates = Person.find_potential_duplicates(
+      first_name: @person.first_name,
+      last_name: @person.last_name,
+      birth_date: @person.birth_date
+    )
+
+    # If duplicates found and user hasn't confirmed, show warning
+    if @duplicates.any? && params[:confirmed] != "true"
+      render :new_with_duplicates, status: :unprocessable_entity
+      return
+    end
 
     respond_to do |format|
       if @person.save
@@ -64,7 +78,8 @@ class PeopleController < ApplicationController
   def person_params
     params.require(:person).permit(
       :first_name, :last_name, :maiden_name, :suffix,
-      :gender, :birth_date, :birth_place, :death_date, :death_place, :notes
+      :gender, :birth_date, :birth_place, :death_date, :death_place, :notes,
+      :avatar
     )
   end
 end

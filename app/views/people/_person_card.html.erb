@@ -1,12 +1,19 @@
 <%= link_to person_path(person), style: "text-decoration: none; color: inherit;" do %>
   <div class="person-card" id="<%= dom_id(person, :card) %>">
-    <div class="person-avatar <%= person.gender %>">
-      <%= person.first_name[0].upcase %><%= person.last_name&.first&.upcase %>
-    </div>
+    <% if person.avatar.attached? %>
+      <%= image_tag person.avatar, class: "person-avatar-img #{person.gender}" %>
+    <% else %>
+      <div class="person-avatar <%= person.gender %>">
+        <%= person.initials %>
+      </div>
+    <% end %>
     <div class="person-info">
       <div class="name"><%= person.full_name %></div>
       <% if person.life_span %>
-        <div class="dates"><%= person.life_span %></div>
+        <div class="dates">
+          <%= person.life_span %>
+          <% if person.age %><span class="age-badge">age <%= person.age %></span><% end %>
+        </div>
       <% end %>
       <% if person.birth_place.present? %>
         <div class="place">📍 <%= person.birth_place %></div>

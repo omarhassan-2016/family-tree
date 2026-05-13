@@ -10,6 +10,7 @@
   <% end %>
 </div>
 
+<%# --- Stats Row --- %>
 <div class="stats-row">
   <div class="stat-card">
     <div class="stat-value"><%= @total_people %></div>
@@ -20,16 +21,136 @@
     <div class="stat-label">Families</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value"><%= @total_people > 0 ? Person.where.not(birth_date: nil).minimum(:birth_date)&.year || '—' : '—' %></div>
+    <div class="stat-value"><%= @earliest_birth&.year || '—' %></div>
     <div class="stat-label">Earliest Birth</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value"><%= Family.maximum(:marriage_date)&.year || '—' %></div>
+    <div class="stat-value"><%= @latest_marriage&.year || '—' %></div>
     <div class="stat-label">Latest Marriage</div>
   </div>
 </div>
 
-<div class="section-header">
+<% if @total_people > 0 %>
+  <%# --- Charts Row --- %>
+  <div class="charts-row">
+    <%# Gender Distribution %>
+    <div class="chart-card">
+      <h4 class="chart-title">Gender Distribution</h4>
+      <div class="donut-chart">
+        <% total = [@male_count + @female_count + @unknown_count, 1].max %>
+        <% male_pct = (@male_count.to_f / total * 100).round %>
+        <% female_pct = (@female_count.to_f / total * 100).round %>
+        <svg viewBox="0 0 120 120" class="donut-svg">
+          <% offset = 0 %>
+          <% [[male_pct, "var(--male)"], [female_pct, "var(--female)"], [100 - male_pct - female_pct, "var(--unknown-gender)"]].each do |pct, color| %>
+            <% next if pct <= 0 %>
+            <circle cx="60" cy="60" r="45" fill="none" stroke="<%= color %>" stroke-width="18"
+                    stroke-dasharray="<%= (pct * 2.827).round(1) %> <%= (282.7 - pct * 2.827).round(1) %>"
+                    stroke-dashoffset="<%= -(offset * 2.827).round(1) %>"
+                    transform="rotate(-90 60 60)" />
+            <% offset += pct %>
+          <% end %>
+          <text x="60" y="56" text-anchor="middle" fill="var(--text-primary)" font-size="18" font-weight="700" font-family="Inter"><%= @total_people %></text>
+          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter">total</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--male);"></span> Male <strong><%= @male_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--female);"></span> Female <strong><%= @female_count %></strong></div>
+          <% if @unknown_count > 0 %>
+            <div class="legend-item"><span class="legend-dot" style="background: var(--unknown-gender);"></span> Unknown <strong><%= @unknown_count %></strong></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Living vs Deceased %>
+    <div class="chart-card">
+      <h4 class="chart-title">Living vs Deceased</h4>
+      <div class="donut-chart">
+        <% alive_total = [@living_count + @deceased_count, 1].max %>
+        <% alive_pct = (@living_count.to_f / alive_total * 100).round %>
+        <svg viewBox="0 0 120 120" class="donut-svg">
+          <circle cx="60" cy="60" r="45" fill="none" stroke="var(--success)" stroke-width="18"
+                  stroke-dasharray="<%= (alive_pct * 2.827).round(1) %> <%= (282.7 - alive_pct * 2.827).round(1) %>"
+                  transform="rotate(-90 60 60)" />
+          <circle cx="60" cy="60" r="45" fill="none" stroke="var(--text-muted)" stroke-width="18"
+                  stroke-dasharray="<%= ((100 - alive_pct) * 2.827).round(1) %> <%= (alive_pct * 2.827).round(1) %>"
+                  stroke-dashoffset="<%= -(alive_pct * 2.827).round(1) %>"
+                  transform="rotate(-90 60 60)" />
+          <text x="60" y="56" text-anchor="middle" fill="var(--text-primary)" font-size="18" font-weight="700" font-family="Inter"><%= alive_pct %>%</text>
+          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Inter">living</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--success);"></span> Living <strong><%= @living_count %></strong></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--text-muted);"></span> Deceased <strong><%= @deceased_count %></strong></div>
+        </div>
+      </div>
+    </div>
+
+    <%# Lifespan Stats %>
+    <% if @avg_lifespan %>
+      <div class="chart-card">
+        <h4 class="chart-title">Lifespan Statistics</h4>
+        <div class="lifespan-stats">
+          <div class="lifespan-stat">
+            <div class="lifespan-value"><%= @avg_lifespan %></div>
+            <div class="lifespan-label">Avg. years</div>
+          </div>
+          <div class="lifespan-stat">
+            <div class="lifespan-value"><%= @max_lifespan %></div>
+            <div class="lifespan-label">Longest</div>
+          </div>
+          <div class="lifespan-stat">
+            <div class="lifespan-value"><%= @min_lifespan %></div>
+            <div class="lifespan-label">Shortest</div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# --- Births by Decade Bar Chart --- %>
+  <% if @births_by_decade.any? %>
+    <div class="chart-card chart-wide">
+      <h4 class="chart-title">Births by Decade</h4>
+      <div class="bar-chart">
+        <% max_births = [@births_by_decade.values.max, 1].max %>
+        <% @births_by_decade.each do |decade, count| %>
+          <div class="bar-group">
+            <div class="bar-wrapper">
+              <div class="bar" style="height: <%= (count.to_f / max_births * 100).round %>%;">
+                <span class="bar-value"><%= count %></span>
+              </div>
+            </div>
+            <div class="bar-label"><%= decade.to_i %>s</div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# --- Top Surnames --- %>
+  <% if @top_surnames.any? %>
+    <div class="chart-card chart-wide">
+      <h4 class="chart-title">Top Surnames</h4>
+      <div class="surname-bars">
+        <% max_surname_count = [@top_surnames.values.max, 1].max %>
+        <% @top_surnames.each do |name, count| %>
+          <div class="surname-row">
+            <div class="surname-name"><%= name %></div>
+            <div class="surname-bar-wrapper">
+              <div class="surname-bar" style="width: <%= (count.to_f / max_surname_count * 100).round %>%;"></div>
+            </div>
+            <div class="surname-count"><%= count %></div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<%# --- Recently Updated --- %>
+<div class="section-header" style="margin-top: 2rem;">
   <h3>Recently Updated</h3>
   <%= link_to "View All →", people_path, class: "btn btn-secondary btn-sm" %>
 </div>
