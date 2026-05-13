@@ -23,7 +23,7 @@ class DashboardController < ApplicationController
       .count
 
     # Average lifespan (people with both birth and death dates)
-    lifespans = Person.where.not(birth_date: nil, death_date: nil).pluck(:birth_date, :death_date)
+    lifespans = Person.where.not(birth_date: nil).where.not(death_date: nil).pluck(:birth_date, :death_date)
     if lifespans.any?
       ages = lifespans.map { |b, d| ((d - b).to_f / 365.25).round }
       @avg_lifespan = (ages.sum.to_f / ages.size).round(1)

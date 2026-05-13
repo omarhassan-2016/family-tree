@@ -73,9 +73,11 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :notes, class: "form-label" %>
-    <%= f.text_area :notes, class: "form-textarea", placeholder: "Additional notes..." %>
+  <div class="form-group" style="margin-bottom: 2rem;">
+    <%= f.label :rich_notes, "Rich Notes & Documents", class: "form-label" %>
+    <div style="background: white; color: black; border-radius: var(--radius-sm); padding: 0.5rem;">
+      <%= f.rich_text_area :rich_notes, placeholder: "Add formatted notes, drag & drop photos/documents here..." %>
+    </div>
   </div>
 
   <div class="btn-group">

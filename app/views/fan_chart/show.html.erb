@@ -1,0 +1,20 @@
+<% content_for(:title) { "Fan Chart: #{@person.full_name} — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>🌀 Ancestor Fan Chart: <%= @person.full_name %></h2>
+    <p class="subtitle">Radial pedigree visualization — 4 generations</p>
+  </div>
+  <div class="btn-group">
+    <%= link_to "← Back to Profile", person_path(@person), class: "btn btn-secondary" %>
+    <%= link_to "📄 PDF Report", person_report_path(@person), class: "btn btn-secondary", data: { turbo: false } %>
+  </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden; min-height: 600px;">
+  <div id="fan-chart-container"
+       data-controller="fan-chart"
+       data-fan-chart-url-value="<%= person_fan_chart_path(@person, format: :json) %>"
+       style="width: 100%; height: 650px;">
+  </div>
+</div>

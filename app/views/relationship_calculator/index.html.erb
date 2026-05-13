@@ -1,0 +1,67 @@
+<% content_for(:title) { "Relationship Calculator — Family Tree" } %>
+
+<div class="page-header">
+  <div>
+    <h2>🔗 Relationship Calculator</h2>
+    <p class="subtitle">Find how two people in your tree are related</p>
+  </div>
+</div>
+
+<div class="card" style="max-width: 600px; margin-bottom: 2rem;">
+  <%= form_with url: relationship_calculator_result_path, method: :get, local: true, class: "person-form" do |f| %>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Person A</label>
+        <%= select_tag :person_a_id,
+            options_for_select(@people.map { |p| ["#{p.full_name} #{p.life_span ? "(#{p.life_span})" : ''}", p.id] }, params[:person_a_id]),
+            include_blank: "— Select —", class: "form-select", required: true %>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Person B</label>
+        <%= select_tag :person_b_id,
+            options_for_select(@people.map { |p| ["#{p.full_name} #{p.life_span ? "(#{p.life_span})" : ''}", p.id] }, params[:person_b_id]),
+            include_blank: "— Select —", class: "form-select", required: true %>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Calculate Relationship</button>
+  <% end %>
+</div>
+
+<% if defined?(@result) %>
+  <% if @result %>
+    <div class="relationship-result">
+      <div class="relationship-result-header">
+        <div class="result-badge"><%= @result[:description] %></div>
+        <div class="result-distance"><%= @result[:distance] %> step<%= @result[:distance] != 1 ? 's' : '' %> apart</div>
+      </div>
+
+      <div class="relationship-path">
+        <% @result[:steps].each_with_index do |step, i| %>
+          <div class="path-node">
+            <% if i == 0 %>
+              <div class="path-person path-start">
+                <div class="person-avatar <%= step[:from].gender %>" style="width:36px;height:36px;font-size:0.8rem;">
+                  <%= step[:from].initials %>
+                </div>
+                <span><%= step[:from].full_name %></span>
+              </div>
+            <% end %>
+            <div class="path-arrow"><%= step[:label] %></div>
+            <div class="path-person <%= i == @result[:steps].size - 1 ? 'path-end' : '' %>">
+              <div class="person-avatar <%= step[:to].gender %>" style="width:36px;height:36px;font-size:0.8rem;">
+                <%= step[:to].initials %>
+              </div>
+              <span><%= step[:to].full_name %></span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="empty-state" style="margin-top: 2rem;">
+      <span class="icon">🚫</span>
+      <p>No relationship found between <strong><%= @person_a.full_name %></strong> and <strong><%= @person_b.full_name %></strong>.</p>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">They don't appear to be connected in your current family tree data.</p>
+    </div>
+  <% end %>
+<% end %>

@@ -3,11 +3,21 @@ Rails.application.routes.draw do
 
   resources :people do
     resource :tree, only: :show, controller: "tree"
+    resource :fan_chart, only: :show, controller: "fan_chart"
+    resource :report, only: :show, controller: "reports"
     resources :relationships, only: [:new, :create, :destroy]
   end
 
   resources :families, only: [:show, :create, :destroy]
   resources :search, only: :index
+
+  # Relationship calculator
+  get "relationship_calculator", to: "relationship_calculator#index"
+  get "relationship_calculator/result", to: "relationship_calculator#result"
+
+  # Map view
+  get "map", to: "map#index"
+  get "map/data", to: "map#data"
 
   resource :gedcom, only: [:new, :create], controller: "gedcom" do
     get :export, on: :member

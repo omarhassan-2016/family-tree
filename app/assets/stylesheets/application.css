@@ -965,6 +965,114 @@ a:hover { color: var(--accent); }
   gap: 0.5rem;
 }
 
+/* === Relationship Calculator === */
+.relationship-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.relationship-result-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.result-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.6rem 1.5rem;
+  border-radius: 99px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.result-distance {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.relationship-path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.path-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.path-person {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.9rem;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.path-person.path-start {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.path-person.path-end {
+  border-color: var(--success);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.path-arrow {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0;
+}
+
+/* === Map Popup (Leaflet dark theme override) === */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border-glass) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-secondary) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-glass) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(15, 15, 26, 0.8) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.65rem !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--accent-light) !important;
+}
+
 /* === Responsive === */
 @media (max-width: 768px) {
   .sidebar { display: none; }
@@ -976,4 +1084,6 @@ a:hover { color: var(--accent); }
   .donut-chart { flex-direction: column; text-align: center; }
   .bar-chart { height: 120px; }
   .surname-name { width: 70px; }
+  .path-person { min-width: auto; }
 }
+

@@ -30,6 +30,16 @@
       <span class="icon">➕</span>
       <span>Add Person</span>
     <% end %>
+
+    <%= link_to relationship_calculator_path, class: "nav-link #{controller_name == 'relationship_calculator' ? 'active' : ''}" do %>
+      <span class="icon">🔗</span>
+      <span>Relationships</span>
+    <% end %>
+
+    <%= link_to map_path, class: "nav-link #{controller_name == 'map' ? 'active' : ''}" do %>
+      <span class="icon">🗺️</span>
+      <span>Map View</span>
+    <% end %>
   </div>
 
   <div class="sidebar-footer">

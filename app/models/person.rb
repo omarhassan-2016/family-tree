@@ -2,6 +2,7 @@ class Person < ApplicationRecord
   has_many :family_members, dependent: :destroy
   has_many :families, through: :family_members
   has_one_attached :avatar
+  has_rich_text :rich_notes
 
   enum :gender, { male: 0, female: 1, unknown: 2 }
 
