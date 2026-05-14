@@ -58,7 +58,7 @@ group :test do
 end
 
 gem "kaminari"
-gem "prawn", "~> 2.4"
+gem "prawn", "~> 2.5"
 gem "prawn-table", "~> 0.2"
 gem "rails-i18n", "~> 7.0"
 gem "matrix"
