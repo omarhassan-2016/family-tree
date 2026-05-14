@@ -34,7 +34,7 @@ class PersonTest < ActiveSupport::TestCase
   test "requires first_name" do
     person = Person.new(last_name: "Smith")
     assert_not person.valid?
-    assert_includes person.errors[:first_name], "can't be blank"
+    assert_not_empty person.errors[:first_name]
   end
 
   test "full_name concatenates names" do

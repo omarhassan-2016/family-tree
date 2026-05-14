@@ -1,25 +1,25 @@
 default: &default
- adapter: postgresql
- encoding: unicode
- pool: 5
- username: omarhassan
- password: 403102
- host: localhost
- advisory_locks: false
- gssencmode: disable
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
+  host: <%= ENV.fetch("DB_HOST") %>
+  advisory_locks: false
+  gssencmode: disable
 
 development:
- <<: *default
- database: family_tree
+  <<: *default
+  database: family_tree
 
 test:
- <<: *default
- database: family_tree_test
+  <<: *default
+  database: family_tree_test
 
 production:
- <<: *default
- database: family_tree_production
- username: postgresql
- password: bJxTunpi09MbZpvgJsYE
- host: family-tree-db.c7kk8sek81rd.eu-central-1.rds.amazonaws.com
- port: 5432
+  <<: *default
+  database: family_tree_production
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
+  host: <%= ENV.fetch("DB_HOST") %>
+  port: 5432

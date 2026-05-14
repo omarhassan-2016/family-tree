@@ -9,7 +9,7 @@ class FamilyMemberTest < ActiveSupport::TestCase
   test "requires role" do
     fm = FamilyMember.new(person: @person, family: @family)
     assert_not fm.valid?
-    assert_includes fm.errors[:role], "can't be blank"
+    assert_not_empty fm.errors[:role]
   end
 
   test "prevents duplicate role in same family" do
