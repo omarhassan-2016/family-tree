@@ -10,7 +10,7 @@ default: &default
 
 development:
   <<: *default
-  database: family_tree
+  database: <%= ENV.fetch("DB_NAME") %>
 
 test:
   <<: *default
@@ -18,7 +18,7 @@ test:
 
 production:
   <<: *default
-  database: family_tree_production
+  database: <%= ENV.fetch("DB_NAME") %>
   username: <%= ENV.fetch("DB_USERNAME") %>
   password: <%= ENV.fetch("DB_PASSWORD") %>
   host: <%= ENV.fetch("DB_HOST") %>
