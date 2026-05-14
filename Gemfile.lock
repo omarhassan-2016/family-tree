@@ -169,7 +169,9 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.6)
+      drb (~> 2.0)
+      prism (~> 1.5)
     msgpack (1.8.0)
     net-imap (0.6.4)
       date
@@ -379,7 +381,7 @@ DEPENDENCIES
   jbuilder
   kaminari
   matrix
-  minitest (~> 5.25)
+  minitest (~> 6.0)
   pg (~> 1.1)
   prawn (~> 2.4)
   prawn-table (~> 0.2)
